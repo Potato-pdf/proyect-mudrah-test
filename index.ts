@@ -5,6 +5,11 @@ import {
     MudraCoreClient 
 } from "@byagsf/mudrah-sdk";
 
+// Asegurar que las variables de entorno estén en el proceso OS para FFI
+if (process.env.JWT_PUBLIC_KEY_PATH) {
+    process.env.JWT_PUBLIC_KEY_PATH = process.env.JWT_PUBLIC_KEY_PATH;
+}
+
 // Simulación de un Contexto de Petición (lo que recibiría un servidor como Elysia o Express)
 interface RequestContext {
     token?: string;
