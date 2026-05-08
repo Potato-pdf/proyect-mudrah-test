@@ -12,13 +12,19 @@ process.env.ARRGOS_LOGS_ENDPOINT = `http://127.0.0.1:${LOG_SERVER_PORT}/logs/bat
 process.env.MUDRA_DISABLE_AUTH = "true"; 
 
 // --- MOCK SERVERS ---
+interface LogBatch {
+    user_id: string;
+    workspace_id: string;
+    events: Array<{ event_type: string; module: string; [key: string]: unknown }>;
+}
+
 const mockLogServer = Bun.serve({
     port: LOG_SERVER_PORT,
     hostname: "127.0.0.1",
     async fetch(req) {
         const url = new URL(req.url);
         if (req.method === "POST" && url.pathname === "/logs/batch") {
-            const body = await req.json();
+            const body = (await req.json()) as LogBatch;
             console.log(`\n[Mock Log Server] 📥 Batch Recibido (User: ${body.user_id}, WS: ${body.workspace_id})`);
             console.log(`   Full JSON: ${JSON.stringify(body, null, 2)}`);
             body.events.forEach((e: any, i: number) => {
